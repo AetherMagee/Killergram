@@ -51,7 +51,7 @@ public class MainHook implements IXposedHookLoadPackage {
                     XposedBridge.hookAllMethods(UserConfigClass, "hasPremiumOnAccounts", XC_MethodReplacement.returnConstant(true));
                 }
 
-                XposedBridge.log("[Killergram] Looks like hook was successful for " + lpparam.packageName);
+                XposedBridge.log("[Killergram] Hook success for " + lpparam.packageName);
             } catch (Throwable error) {
                 XposedBridge.log("[Killergram] Hook failure for " + lpparam.packageName);
                 XposedBridge.log(Arrays.toString(error.getStackTrace()));
