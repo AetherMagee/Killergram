@@ -50,6 +50,8 @@ public class MainHook implements IXposedHookLoadPackage {
                     XposedBridge.hookAllMethods(UserConfigClass, "getMaxAccountCount", XC_MethodReplacement.returnConstant(999));
                     XposedBridge.hookAllMethods(UserConfigClass, "hasPremiumOnAccounts", XC_MethodReplacement.returnConstant(true));
                 }
+
+                XposedBridge.log("Looks like hook was successful for " + lpparam.packageName);
             } catch (Throwable error) {
                 XposedBridge.log("Hook failure for " + lpparam.packageName);
                 XposedBridge.log(Arrays.toString(error.getStackTrace()));
