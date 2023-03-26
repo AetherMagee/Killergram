@@ -26,29 +26,38 @@ public class MainHook implements IXposedHookLoadPackage {
             "org.aka.messenger",
             "ellipi.messenger",
             "org.nift4.catox",
-            "it.owlgram.android");
+            "it.owlgram.android",
+            "com.exteragram.messenger");
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam lpparam) {
         if (hookPackages.contains(lpparam.packageName)) {
             try {
+                // Working with MessageController - sponsored messages and forwarding
                 Class<?> messagesControllerClass = XposedHelpers.findClassIfExists("org.telegram.messenger.MessagesController", lpparam.classLoader);
                 if (messagesControllerClass != null) {
                     XposedBridge.hookAllMethods(messagesControllerClass, "getSponsoredMessages", XC_MethodReplacement.returnConstant(null));
                     XposedBridge.hookAllMethods(messagesControllerClass, "isChatNoForwards", XC_MethodReplacement.returnConstant(false));
                 }
+
+                // Working with ChatActivity - sponsored messages
                 Class<?> chatUIActivityClass = XposedHelpers.findClassIfExists("org.telegram.ui.ChatActivity", lpparam.classLoader);
                 if (chatUIActivityClass != null) {
                     XposedBridge.hookAllMethods(chatUIActivityClass, "addSponsoredMessages", XC_MethodReplacement.returnConstant(null));
                 }
+
+                // Working with SharedConfig - performance class
                 Class<?> SharedConfigClass = XposedHelpers.findClassIfExists("org.telegram.messenger.SharedConfig", lpparam.classLoader);
                 if (SharedConfigClass != null) {
                     XposedBridge.hookAllMethods(SharedConfigClass, "getDevicePerformanceClass", XC_MethodReplacement.returnConstant(2));
                 }
+
+                // Working with UserConfig - acc count, overall premium
                 Class<?> UserConfigClass = XposedHelpers.findClassIfExists("org.telegram.messenger.UserConfig", lpparam.classLoader);
                 if (UserConfigClass != null) {
                     XposedBridge.hookAllMethods(UserConfigClass, "getMaxAccountCount", XC_MethodReplacement.returnConstant(999));
                     XposedBridge.hookAllMethods(UserConfigClass, "hasPremiumOnAccounts", XC_MethodReplacement.returnConstant(true));
+                    XposedBridge.hookAllMethods(UserConfigClass, "isPremium", XC_MethodReplacement.returnConstant(true)); // I hate to do this but i cannot find the function responsible for autotranslate
                 }
 
                 XposedBridge.log("[Killergram] Hook success for " + lpparam.packageName);
