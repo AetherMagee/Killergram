@@ -38,18 +38,24 @@ public class MainHook implements IXposedHookLoadPackage {
                 if (messagesControllerClass != null) {
                     XposedBridge.hookAllMethods(messagesControllerClass, "getSponsoredMessages", XC_MethodReplacement.returnConstant(null));
                     XposedBridge.hookAllMethods(messagesControllerClass, "isChatNoForwards", XC_MethodReplacement.returnConstant(false));
+                } else {
+                    XposedBridge.log("[Killergram] messagesControllerClass not found");
                 }
 
                 // Working with ChatActivity - sponsored messages
                 Class<?> chatUIActivityClass = XposedHelpers.findClassIfExists("org.telegram.ui.ChatActivity", lpparam.classLoader);
                 if (chatUIActivityClass != null) {
                     XposedBridge.hookAllMethods(chatUIActivityClass, "addSponsoredMessages", XC_MethodReplacement.returnConstant(null));
+                } else {
+                    XposedBridge.log("[Killergram] chatUIActivityClass not found");
                 }
 
                 // Working with SharedConfig - performance class
                 Class<?> SharedConfigClass = XposedHelpers.findClassIfExists("org.telegram.messenger.SharedConfig", lpparam.classLoader);
                 if (SharedConfigClass != null) {
                     XposedBridge.hookAllMethods(SharedConfigClass, "getDevicePerformanceClass", XC_MethodReplacement.returnConstant(2));
+                } else {
+                    XposedBridge.log("[Killergram] SharedConfigClass not found");
                 }
 
                 // Working with UserConfig - acc count, overall premium
@@ -57,8 +63,18 @@ public class MainHook implements IXposedHookLoadPackage {
                 if (UserConfigClass != null) {
                     XposedBridge.hookAllMethods(UserConfigClass, "getMaxAccountCount", XC_MethodReplacement.returnConstant(999));
                     XposedBridge.hookAllMethods(UserConfigClass, "hasPremiumOnAccounts", XC_MethodReplacement.returnConstant(true));
-                    XposedBridge.hookAllMethods(UserConfigClass, "isPremium", XC_MethodReplacement.returnConstant(true)); // I hate to do this but i cannot find the function responsible for autotranslate
+                    // XposedBridge.hookAllMethods(UserConfigClass, "isPremium", XC_MethodReplacement.returnConstant(true));
+                } else {
+                    XposedBridge.log("[Killergram] UserConfigClass not found");
                 }
+
+                Class<?> TranslateControllerClass = XposedHelpers.findClassIfExists("org.telegram.messenger.TranslateController", lpparam.classLoader);
+                if (TranslateControllerClass != null) {
+                    XposedBridge.hookAllMethods(TranslateControllerClass, "isFeatureAvailable", XC_MethodReplacement.returnConstant(true));
+                } else {
+                    XposedBridge.log("[Killergram] TranslateControllerClass not found");
+                }
+
 
                 XposedBridge.log("[Killergram] Hook success for " + lpparam.packageName);
             } catch (Throwable error) {
