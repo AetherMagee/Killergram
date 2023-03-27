@@ -63,17 +63,9 @@ public class MainHook implements IXposedHookLoadPackage {
                 if (UserConfigClass != null) {
                     XposedBridge.hookAllMethods(UserConfigClass, "getMaxAccountCount", XC_MethodReplacement.returnConstant(999));
                     XposedBridge.hookAllMethods(UserConfigClass, "hasPremiumOnAccounts", XC_MethodReplacement.returnConstant(true));
-                    // XposedBridge.hookAllMethods(UserConfigClass, "isPremium", XC_MethodReplacement.returnConstant(true));  // Planning to do a file existence check or some other way to enable it afterwards
+                    XposedBridge.hookAllMethods(UserConfigClass, "isPremium", XC_MethodReplacement.returnConstant(true));
                 } else {
                     XposedBridge.log("[Killergram] UserConfigClass not found");
-                }
-
-                // Working with TranslateController - auto translate
-                Class<?> TranslateControllerClass = XposedHelpers.findClassIfExists("org.telegram.messenger.TranslateController", lpparam.classLoader);
-                if (TranslateControllerClass != null) {
-                    XposedBridge.hookAllMethods(TranslateControllerClass, "isFeatureAvailable", XC_MethodReplacement.returnConstant(true));
-                } else {
-                    XposedBridge.log("[Killergram] TranslateControllerClass not found");
                 }
 
 
