@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Killergram</string>
-    <string name="app_desc">Remove sponsored messages of Telegram</string>
+    <string name="app_desc">Remove sponsored messages, account limit and forward restriction in Telegram</string>
 </resources>
